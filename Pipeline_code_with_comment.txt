@@ -1,3 +1,5 @@
+// install trivy and htmlhit on the machine where jenkins is installed, it will help you to run trivy command to scan the newlly created image and htmlhit to test the html cod of index.html file //
+
 pipeline {
     agent any // Specifies that this pipeline can run on any available agent.
     stages {
