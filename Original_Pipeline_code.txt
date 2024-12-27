@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/himangshu12345/Jenkins_nginx.git'
+            }
+        }
+        stage('Test HTML') {
+            steps {
+                sh 'htmlhint index.html || true'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t mynginximage .'
+            }
+        }
+        stage('Image Scan') {
+            steps {
+                sh 'trivy image mynginximage || true'
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASWD', variable: 'DOCKER_HUB_PASWD')]) {
+                    sh 'docker login -u himangshu12 -p $DOCKER_HUB_PASWD' 
+                }
+                sh 'docker tag mynginximage himangshu12/jenkins_cicd'
+                sh 'docker push himangshu12/jenkins_cicd'
+            }
+        }
+        stage('Deploy Container') {
+            steps {
+                sh 'docker run -d -p 9090:80 himangshu12/jenkins_cicd'
+            }
+        }
+    }
+}
