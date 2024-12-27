@@ -1,4 +1,28 @@
-// install trivy and htmlhit on the machine where jenkins is installed, it will help you to run trivy command to scan the newlly created image and htmlhit to test the html cod of index.html file //
+// install trivy and htmlhit or tidy if htmlhint is not installing on the machine where jenkins is installed, it will help you to run trivy command to scan the newlly created image and htmlhit to test the html cod of index.html file 
+to install  trivy 
+Ubuntu - sudo apt update && sudo apt upgrade -y
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo tee /etc/apt/trusted.gpg.d/aquasecurity.asc
+echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main" | sudo tee -a 
+etc/apt/sources.list.d/trivy.list
+sudo apt update
+sudo apt install -y trivy
+RHEL, CentOS, Amazon Linux - sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://aquasecurity.github.io/trivy-repo/rpm/releases/$(. /etc/os-release && echo $VERSION_ID)/$(uname -m)
+sudo yum install -y trivy
+trivy --version
+
+to install tidy 
+sudo amazon-linux-extras enable epel
+sudo yum install -y epel-release
+sudo yum install -y tidy
+command to test code via tidy tidy -errors -quiet index.html
+
+to install htmlhint
+curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+sudo yum install -y nodejs
+sudo npm install -g htmlhint
+
+//
 
 pipeline {
     agent any // Specifies that this pipeline can run on any available agent.
